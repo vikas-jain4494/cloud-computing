@@ -1,0 +1,78 @@
+import os
+import time
+import sys
+import thread
+import socket
+import commands
+def func20():
+	def t9():
+		os.system("yum install qemu-kvm -y &> /dev/null")
+		os.system("yum install libvirt -y &> /dev/null")
+		os.system("yum install virt-manager -y &> /dev/null")
+		os.system("yum install libvirt-python -y &> /dev/null")
+	def t10():
+		os.system("dialog  --pause 'please wait for installation ....' 30 30 10")
+
+	x=commands.getstatusoutput("rpm -q qemu-kvm libvirt virt-manager libvirt-python")[0]
+	if x==0:
+		pass
+	else:
+		try:
+			thread.start_new_thread(t9,())
+			thread.start_new_thread(t10,())
+		except:
+			print "unable to read thread"
+		time.sleep(31)
+		os.system("dialog  --msgbox 'installation complete :) :)' 10 40")
+def func21(l1 ,wayinstall):
+	os.system("service libvirtd restart")
+	osname=l1[0]
+	ostype=l1[4]
+	if osname=='1' and wayinstall=='1':
+		fhvncport=open("/root/Desktop/project/vncport","r+")
+		vncport=fhvncport.read()
+		vncport=vncport.strip()
+		
+		fhipaddr=open("/root/Desktop/project/ipaddr","r+")
+		ipaddr=fhipaddr.read()
+		ipaddr=ipaddr.strip()
+
+		fhmacaddr=open("/root/Desktop/project/macaddr","r+")
+		macaddr=fhmacaddr.read()
+		macaddr=macaddr.strip()
+		print "hi"
+		os.system("/usr/sbin/virt-install --vnc --vncport=" + vncport + " --vnclisten=0.0.0.0  --noautoconsole --name=" + osname + " --ram=" + ram + " --arch=x86_64 --vcpus=" + cpu + "  --os-type=linux --os-variant=" + ostype  + " --hvm --accelerate --disk=/tmp/rhel6new,size=" + hdsize + " -m  " + macaddr  + " --location=/kickstart/rhel6.iso --extra-args='ks=nfs:localhost.localdomain:/kickstart/vserver.cfg ip=" +  ipaddr  + " netmask=255.255.255.0 gateway=192.168.0.254 dns=192.168.0.254 noipv6' ")
+
+		vncport=int(vncport)+1
+		fhvncport.seek(0,0)
+		vncport=str(vncport)
+		fhvncport.write(vncport)
+		fhvncport.close()
+
+		ipaddr=int(ipaddr)+1
+		fhipaddr.seek(0,0)
+		ipaddr=str(ipaddr)
+		fhipaddr.write(ipaddr)
+		fhipaddr.close()
+
+		macaddr=int(macaddr)+1
+		fhmacaddr.seek(0,0)
+		macaddr=str(macaddr)
+		fhmacaddr.write(macaddr)
+		fhmacaddr.close()
+
+	else:
+		pass
+def func22(service):
+	if service=='1':
+		pass
+	elif service=='2':
+		pass
+	elif service=='3':
+		os.system("yum install xrdp -y &> /dev/null")
+		os.system("service xrdp restart")
+		os.system("chkconfig xrdp on")
+	else:
+		pass
+	
+	

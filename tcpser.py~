@@ -1,0 +1,136 @@
+import os
+import time
+import sys
+import thread
+import log
+import socket
+import NAS
+import ISCSI
+import IAAS
+i=0
+def t13(i):
+	s=socket.socket()
+	prt=5005+i
+	s.bind(("",prt))
+	s.listen(1)
+	c ,addr =s.accept()
+	i+=1
+	def t14():
+		func100(c,addr,s,i)
+	thread.start_new_thread(t14,())
+	thread.start_new_thread(t13(i),())
+	 
+
+def func100(c,addr,s,i):
+	p=log.func4(c)
+	if p[0]==1:
+		if p[1]==0:
+			p=log.func4(c)
+			if p[0]==1:
+				if p[1]==0:
+					user=c.recv(20)
+					t=log.func2(user)
+					passwd=c.recv(20)
+					if t[0]!=t[1] and passwd=="redhat":
+						m=0
+						m1=str(m)	
+						c.send(m1)
+					else:
+						m=1	
+						m1=str(m)	
+						c.send(m1)
+				else:
+					pass
+			else:
+				pass
+		else:
+			pass
+	else:
+		pass
+	b1 ,a1 =s.accept()
+	ch=b1.recv(1)
+	if int(ch)==2:
+		b2 ,a2 =s.accept()
+		c1=b2.recv(1)
+		if int(c1)==1:
+			d1=b2.recv(1)
+			if int(d1)==1:
+				size=b2.recv(10)
+				NAS.func8()
+				path1=NAS.func5(size,d1)
+				b2.send(path1)
+				b2.recv(10)
+			elif int(d1)==2:
+				szincz=b2.recv(10)
+				NAS.func8()
+				NAS.func9(szincz)
+				b2.recv(10)
+			elif int(d1)==4:
+				snapname=b2.recv(10)
+				NAS.func8()
+				size=b2.recv(10)
+				snappath=NAS.func18(snapname ,size)
+				b2.send(snappath)
+				b2.recv(10)
+			else:
+				szdcz=b2.recv(10)
+				NAS.func8()
+				NAS.func10(szdcz)
+				b2.recv(10)
+		else:
+			e1=b2.recv(10)
+			if int(e1)==1:
+				size=b2.recv(10)
+				ISCSI.func11()
+				iscsiname=ISCSI.func12(size,a2[0])
+				b2.send(iscsiname)
+				b2.recv(10)
+			elif int(e1)==2:
+				szincz=b2.recv(10)
+				NAS.func8()
+				NAS.func9(szincz)
+				b2.recv(10)
+			elif int(e3)==3:
+				szdcz=b2.recv(10)
+				NAS.func8()
+				NAS.func10(szdcz)
+				b2.recv(10)
+			else:
+				snapname=b2.recv(10)
+				ISCSI.func11()
+				size=b2.recv(10)
+				snappath=ISCSI.func19(snapname ,size)
+				b2.send(snappath)
+	elif int(ch)==3:
+		l1=[]
+		b3 ,a3=s.accept()
+		osname=b3.recv(10)
+		l1.append(osname)
+		ram=b3.recv(10)
+		l1.append(ram)
+		cpu=b3.recv(10)
+		l1.append(cpu)
+		hdsize=b3.recv(10)
+		l1.append(hdsize)
+		ostype=b3.recv(10)
+		l1.append(ostype)
+		wayinstall=b3.recv(10)
+		IAAS.func20()
+		IAAS.func21(l1 , wayinstall)
+		b3.send("ok")
+		service=b3.recv(10)
+		IAAS.func22(service)
+		b3.send("ok")
+		b3.recv(10)
+	elif int(ch)==1:
+		os.system("yum install openssh-server -y")
+		os.system("service sshd restart")
+		b1.recv(10)
+	else:
+		pass
+
+thread.start_new_thread(t13(i),())
+
+while 1:
+	pass
+
